@@ -1,0 +1,14 @@
+{
+  "$schema": "https://rork.com/schema/rork.json",
+  "apps": [
+    {
+      "name": "Sitch AI Browser",
+      "path": "ios",
+      "framework": "swift",
+      "settings": {
+        "displayName": "Sitch AI Browser",
+        "iosBundleId": "app.rork.sitchaibrowser"
+      }
+    }
+  ]
+}
