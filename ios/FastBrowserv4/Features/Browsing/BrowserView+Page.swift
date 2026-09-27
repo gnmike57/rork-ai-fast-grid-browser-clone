@@ -25,8 +25,9 @@ extension BrowserView {
             Capsule()
                 .fill(Color(.secondarySystemBackground))
                 .frame(width: 36, height: 5)
-                .padding(.top, 8)
-                .padding(.bottom, 2)
+                // The visible sliver is tiny; the whole 44pt band is the
+                // target so the tab is easy to hit one-handed.
+                .frame(height: 44)
         }
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)

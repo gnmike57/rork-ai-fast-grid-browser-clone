@@ -393,7 +393,9 @@ struct QuadBrowserView: View {
             // thumb reach, out of the way of the page, and clear of both the
             // strip above and the centred hold pill beside it.
             .overlay(alignment: .bottomTrailing) {
-                if followLeader && controller.canInstantFill {
+                // Tucked away together with the chrome: a swiped-away strip
+                // means a clean page, and the chip comes back with it.
+                if followLeader && isFollowLeaderChromeVisible && controller.canInstantFill {
                     InstantFillChip(
                         isWorking: controller.isInstantFilling,
                         action: { controller.runInstantFill() }
@@ -405,6 +407,7 @@ struct QuadBrowserView: View {
                 }
             }
             .animation(Cockpit.Motion.quick, value: controller.canInstantFill)
+            .animation(Cockpit.Motion.quick, value: isFollowLeaderChromeVisible)
             .animation(Cockpit.Motion.panel, value: controller.isFollowLeaderGateHolding)
         }
         // A light tap the instant the squad lets the leader through, so a
@@ -611,6 +614,9 @@ struct QuadBrowserView: View {
                 // kept clean and followers are invisible.
                 if !followLeader {
                     cellBadge(session)
+                        // Display-only chrome: a tap on the badge should
+                        // reach the page beneath it, never dead-end here.
+                        .allowsHitTesting(false)
 
                     if diagnostics.overlayEnabled {
                         VStack {
@@ -1134,7 +1140,7 @@ private struct FollowLeaderTopOverlay: View {
                     Image(systemName: mode.iconName)
                         .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(isSelected ? Cockpit.onAccent : Color.white.opacity(0.75))
-                        .frame(width: 24, height: 24)
+                        .frame(width: 32, height: 32)
                         .background(Circle().fill(isSelected ? Cockpit.live : Color.white.opacity(0.12)))
                         .contentShape(Circle())
                 }
@@ -1151,7 +1157,7 @@ private struct FollowLeaderTopOverlay: View {
                     Image(systemName: "list.bullet.rectangle")
                         .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(Color.white.opacity(0.85))
-                        .frame(width: 24, height: 24)
+                        .frame(width: 32, height: 32)
                         .background(Circle().fill(Color.white.opacity(0.12)))
                         .contentShape(Circle())
                 }
@@ -1174,7 +1180,7 @@ private struct FollowLeaderTopOverlay: View {
                     Image(systemName: style.iconName)
                         .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(isSelected ? Color.black : Color.white.opacity(0.75))
-                        .frame(width: 24, height: 24)
+                        .frame(width: 32, height: 32)
                         .background(Circle().fill(isSelected ? Cockpit.live : Color.white.opacity(0.12)))
                         .contentShape(Circle())
                 }

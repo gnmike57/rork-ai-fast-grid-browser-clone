@@ -27,6 +27,10 @@ struct WindowDiagnosticsBadge: View {
                 .padding(.horizontal, compact ? 5 : 7)
                 .padding(.vertical, compact ? 3 : 4)
                 .background(Color.black.opacity(0.62), in: .rect(cornerRadius: 8))
+                // The pill is tiny, but it is the only way into the expanded
+                // report — pad the target out so it can actually be hit.
+                .padding(6)
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("\(title) memory \(memoryLabel), leak check \(verdictLabel)")

@@ -140,6 +140,10 @@ class BrowserViewModel {
     private var urlBarHideTimerTask: Task<Void, Never>?
     private var urlBarBHideTimerTask: Task<Void, Never>?
 
+    /// The one and only automatic hide rule: ten seconds without a touch.
+    /// A swipe is the only way to hide a bar sooner; editing keeps it open.
+    static let urlBarAutoHideDelay: Duration = .seconds(10)
+
     // MARK: - Quad Mode
     enum QuadMode: Equatable {
         case single
@@ -1041,14 +1045,12 @@ class BrowserViewModel {
         // Never start a hide countdown while the user is actively editing
         // the address bar — the bar must stay pinned open until editing ends.
         guard !isURLBarEditing else { return }
-        guard !isRCRRunning, !quadController.anyRCRRunning else { return }
         urlBarHideTimerTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(5))
+            try? await Task.sleep(for: Self.urlBarAutoHideDelay)
             guard let self, !Task.isCancelled else { return }
             // Re-check editing state at fire time — the user may have
             // focused the field after the countdown was scheduled.
             guard !self.isURLBarEditing else { return }
-            guard !self.isRCRRunning, !self.quadController.anyRCRRunning else { return }
             withAnimation(.easeInOut(duration: 0.3)) {
                 self.isURLBarVisible = false
             }
@@ -1060,12 +1062,10 @@ class BrowserViewModel {
         isURLBarBVisible = true
         // Same editing guard for the Site B address bar.
         guard !isURLBarEditing else { return }
-        guard !quadController.anyRCRRunning else { return }
         urlBarBHideTimerTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(5))
+            try? await Task.sleep(for: Self.urlBarAutoHideDelay)
             guard let self, !Task.isCancelled else { return }
             guard !self.isURLBarEditing else { return }
-            guard !self.quadController.anyRCRRunning else { return }
             withAnimation(.easeInOut(duration: 0.3)) {
                 self.isURLBarBVisible = false
             }
